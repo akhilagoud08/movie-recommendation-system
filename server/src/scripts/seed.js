@@ -75,8 +75,11 @@ const movies = [
 ];
 
 await connectDatabase();
-await Movie.deleteMany({});
+await Movie.collection.drop().catch((error) => {
+  if (error.codeName !== 'NamespaceNotFound') {
+    throw error;
+  }
+});
 await Movie.insertMany(movies);
 console.log(`Seeded ${movies.length} movies`);
 await mongoose.disconnect();
-
